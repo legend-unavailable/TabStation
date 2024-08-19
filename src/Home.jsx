@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import './styles/Home.css'
 
 export const Home = () => {
@@ -7,6 +7,8 @@ export const Home = () => {
     const [progressStatus, setProgressStatus] = useState(false);
     const [learnedStatus, setLearnedStatus] = useState(false);
     const [addItemStatus, setAddItemStatus] = useState(false);
+    const [inputMethodStatus, setInputMethodStatus] = useState(false);
+    const [inputType, setInputType] = useState(false);
 
     //toggles which section is visible
     const showItems = (num) => {
@@ -15,19 +17,23 @@ export const Home = () => {
                 setProgressStatus(false);
                 setLearnedStatus(false);
                 setToLearnStatus(true);
+                setAddItemStatus(false);
                 break;
             case 2: 
                 setToLearnStatus(false);
                 setLearnedStatus(false);
                 setProgressStatus(true);
+                setAddItemStatus(false);
                 break;
             case 3:
                 setToLearnStatus(false);
                 setProgressStatus(false);
                 setLearnedStatus(true);
+                setAddItemStatus(false);
                 break;
             case 4:
                 setAddItemStatus(!addItemStatus);
+                setToLearnStatus(!toLearnStatus);
             default:
                 break;
         }
@@ -35,12 +41,14 @@ export const Home = () => {
     //the sections that become visible when their button is clicked
     const songsToLearn = () => {
         return(
-            <div>
+            <>
+            <div className='toLearn'>
                 Maps - Maroon 5 <br />
                 Smells Like Teen Spirit - Nirvana <br />
                 The Remedy - Polaris <br />
                 <button onClick={() => showItems(4)}>Add Item</button>
             </div>
+            </>
         );
     }
     const songsInProgress = () => {
@@ -49,7 +57,6 @@ export const Home = () => {
                 Doomsday - Stand Atlantic <br />
                 Flying Whales - Gojira <br />
                 Solway Firth - Slipknot <br />
-                <button>Add Item</button>
             </div>
         );
     }
@@ -59,28 +66,47 @@ export const Home = () => {
                 Rein Raus - Rammstein <br />
                 Hate/Love -Electric Callboy <br />
                 Aru Machi No Gunjou(A Town in Blue) - Asian Kung-Fu Generation <br />
-                <button>Add Item</button>
             </div>
         );
     }
-    const addItemSection = () => {
+    const changeInputType = (event) => {
+        setInputType(event.target.value);
+        setInputMethodStatus(true);
+    }
+    const AddItem = () => {
         return(
-            <>
-            <label htmlFor="">Enter the Title of Song</label>
-            <input type="text" placeholder='Song Name'/> <br />
-            <label htmlFor="">Choose if you have the tab file or a link to a website that has the tab:</label>
-            <select name="" id="">
-                <option value="">--Choose method--</option>
-                <option value="file">File</option>
-                <option value="url">Url/Link</option>
-            </select>
-            
-            <div>
-                <img src="" alt="" />
-                <input type="file" name="" id="" />
+            <div className='addItem'>
+                <label htmlFor="">Enter the Title of Song</label> <br />
+                <input type="text" placeholder='Song Name'/> <br />
+                <label htmlFor="">Choose if you have the tab file or a link to a website that has the tab:</label> <br />
+                <select value={inputType} onChange={changeInputType}>
+                    <option value="">--Choose method--</option>
+                    <option value='file'>File</option>
+                    <option value='url'>Url/Link</option>
+                </select> <br />     
+                {inputMethodStatus && enterInput()}           
+                <input type="button" value="Submit" onClick={changeInputType}/>
             </div>
-            </>
         );
+    }
+
+    const enterInput = () => {
+        if (inputType === 'file') {
+            return (
+                <div>
+                    <label htmlFor="">Submit tab file from your device</label>
+                    <input type="file" name="" id="" />
+                </div>
+            );
+        }
+        else if (inputType === 'url'){
+            return (
+                <div>
+                    <label htmlFor="">Enter url/link</label>
+                    <input type="url" name="" id="" />
+                </div>
+            );
+        }
     }
 
     return(
@@ -93,6 +119,7 @@ export const Home = () => {
             </div>
             <div className="tolearn">
                 {toLearnStatus && songsToLearn()}
+                {addItemStatus && AddItem()}
             </div>
             <div className="current">
                 {progressStatus && songsInProgress()}
@@ -100,7 +127,6 @@ export const Home = () => {
             <div className="learned">
                 {learnedStatus && songsLearned()}
             </div>
-            {addItemStatus && addItemSection()}
         </>
     );
 }
