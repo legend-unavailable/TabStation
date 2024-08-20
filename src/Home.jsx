@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import './styles/Home.css'
+import { songsToLearn as toLearn, songsInProgress as inProgress, songsLearned as learned} from './Songs';
 
 export const Home = () => {
     //vars that control whether a section is hidden
@@ -40,32 +41,32 @@ export const Home = () => {
     }
     //the sections that become visible when their button is clicked
     const songsToLearn = () => {
+        let keyID = 0;
+        const STL = toLearn.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
         return(
             <>
             <div className='toLearn'>
-                Maps - Maroon 5 <br />
-                Smells Like Teen Spirit - Nirvana <br />
-                The Remedy - Polaris <br />
+                {STL}
                 <button onClick={() => showItems(4)}>Add Item</button>
             </div>
             </>
         );
     }
     const songsInProgress = () => {
+        let keyID = 0;
+        const SIP = inProgress.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
         return(
             <div>
-                Doomsday - Stand Atlantic <br />
-                Flying Whales - Gojira <br />
-                Solway Firth - Slipknot <br />
+                {SIP}
             </div>
         );
     }
     const songsLearned = () => {
+        let keyID = 0;
+        const SL = learned.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
         return(
             <div>
-                Rein Raus - Rammstein <br />
-                Hate/Love -Electric Callboy <br />
-                Aru Machi No Gunjou(A Town in Blue) - Asian Kung-Fu Generation <br />
+                {SL}
             </div>
         );
     }
@@ -73,12 +74,20 @@ export const Home = () => {
         setInputType(event.target.value);
         setInputMethodStatus(true);
     }
+    const addSong = (tab) => {
+        const songName = document.getElementById('name').value;
+        const bandName = document.getElementById('band').value;
+        toLearn.push({song: songName, artist: bandName, tab: tab});
+        showItems(4);
+    }
     const AddItem = () => {
         return(
             <div className='addItem'>
-                <label htmlFor="">Enter the Title of Song</label> <br />
-                <input type="text" placeholder='Song Name'/> <br />
-                <label htmlFor="">Choose if you have the tab file or a link to a website that has the tab:</label> <br />
+                <label>Enter the Title of Song</label> <br />
+                <input type="text" placeholder='Song Name' id='name'/> <br />
+                <label>Enter the Name of the Artist/Band</label> <br />
+                <input type="text" placeholder='Artist/Band' id='band'/> <br />
+                <label>Choose if you have the tab file or a link to a website that has the tab:</label> <br />
                 <select value={inputType} onChange={changeInputType}>
                     <option value="">--Choose method--</option>
                     <option value='file'>File</option>
@@ -95,7 +104,8 @@ export const Home = () => {
             return (
                 <div>
                     <label htmlFor="">Submit tab file from your device</label>
-                    <input type="file" name="" id="" />
+                    <input type="file" id="tab1"/>
+                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab1'))}/>
                 </div>
             );
         }
@@ -103,7 +113,8 @@ export const Home = () => {
             return (
                 <div>
                     <label htmlFor="">Enter url/link</label>
-                    <input type="url" name="" id="" />
+                    <input type="url" id="tab2" />
+                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab2'))}/>
                 </div>
             );
         }
