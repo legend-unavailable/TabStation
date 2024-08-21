@@ -10,6 +10,7 @@ export const Home = () => {
     const [addItemStatus, setAddItemStatus] = useState(false);
     const [inputMethodStatus, setInputMethodStatus] = useState(false);
     const [inputType, setInputType] = useState(false);
+    const [toLearnArr, setToLearnArr] = useState([...toLearn]);
 
     //toggles which section is visible
     const showItems = (num) => {
@@ -39,14 +40,24 @@ export const Home = () => {
                 break;
         }
     }
+    const moveSong = (num) => {
+       //fill out
+    }
     //the sections that become visible when their button is clicked
     const songsToLearn = () => {
         let keyID = 0;
-        const STL = toLearn.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
+        const STL = toLearnArr.map(songs => {
+            return(
+                <>
+                <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}</li>
+                <input type="button" value="Move Song" key='' onClick={moveSong(keyID)}/>
+                <input type="button" value="Delete" key={keyID}/>
+                <input type="button" value="Edit" key={keyID}/>
+                </>)});
         return(
             <>
             <div className='toLearn'>
-                {STL}
+                {STL} <br />
                 <button onClick={() => showItems(4)}>Add Item</button>
             </div>
             </>
@@ -54,7 +65,15 @@ export const Home = () => {
     }
     const songsInProgress = () => {
         let keyID = 0;
-        const SIP = inProgress.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
+        const SIP = inProgress.map(songs => {
+            return(
+                <>
+                <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}</li>
+                <input type="button" value="Move Song" key={keyID}/>
+                <input type="button" value="Delete" key={keyID}/>
+                <input type="button" value="Edit" key={keyID}/>
+                <br />
+                </>)});
         return(
             <div>
                 {SIP}
@@ -63,7 +82,14 @@ export const Home = () => {
     }
     const songsLearned = () => {
         let keyID = 0;
-        const SL = learned.map(songs => <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}<br /></li>);
+        const SL = learned.map(songs => {
+            return(
+                <>
+                <li key={keyID++}>{songs.song} - {songs.artist} tabs {songs.tab}</li>
+                <input type="button" value="Move Song" key={keyID}/>
+                <input type="button" value="Delete" key={keyID}/>
+                <input type="button" value="Edit" key={keyID}/>
+                </>)});
         return(
             <div>
                 {SL}
@@ -77,7 +103,7 @@ export const Home = () => {
     const addSong = (tab) => {
         const songName = document.getElementById('name').value;
         const bandName = document.getElementById('band').value;
-        toLearn.push({song: songName, artist: bandName, tab: tab});
+        setToLearnArr([...toLearnArr, {song: songName, artist: bandName, tab: tab}]);
         showItems(4);
     }
     const AddItem = () => {
@@ -93,8 +119,7 @@ export const Home = () => {
                     <option value='file'>File</option>
                     <option value='url'>Url/Link</option>
                 </select> <br />     
-                {inputMethodStatus && enterInput()}           
-                <input type="button" value="Submit" onClick={changeInputType}/>
+                {inputMethodStatus && enterInput()}
             </div>
         );
     }
@@ -105,7 +130,7 @@ export const Home = () => {
                 <div>
                     <label htmlFor="">Submit tab file from your device</label>
                     <input type="file" id="tab1"/>
-                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab1'))}/>
+                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab1').value)}/>
                 </div>
             );
         }
@@ -114,7 +139,7 @@ export const Home = () => {
                 <div>
                     <label htmlFor="">Enter url/link</label>
                     <input type="url" id="tab2" />
-                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab2'))}/>
+                    <input type="button" value="Add Song" onClick={() => addSong(document.getElementById('tab2').value)}/>
                 </div>
             );
         }
